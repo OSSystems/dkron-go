@@ -30,14 +30,14 @@ type Job struct {
 }
 
 type JobsService interface {
-	Add(*Job) (*Job, error)
+	Add(Job) (*Job, error)
 }
 
 type JobsServiceOp struct {
 	client *Client
 }
 
-func (s *JobsServiceOp) Add(j *Job) (*Job, error) {
+func (s *JobsServiceOp) Add(j Job) (*Job, error) {
 	req, err := s.client.NewRequest(http.MethodPost, jobBasePath, j)
 	if err != nil {
 		return nil, err
@@ -45,6 +45,9 @@ func (s *JobsServiceOp) Add(j *Job) (*Job, error) {
 
 	job := &Job{}
 	_, err = s.client.Do(req, job)
+	if err != nil {
+		return nil, err
+	}
 
 	return job, nil
 }
